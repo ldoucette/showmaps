@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Synchronous Loading</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <style>
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      .map {
+      			height: 200px;
+      			width:200px;
+      			border:1px solid grey;
+      		}
+    </style>
+
+    <script>
+    var url = "https://script.google.com/macros/s/AKfycbzHXS-K02KWzxwgh88LkQ4QLvzBNLq3EmpieJYduNEUt4nXhoah/exec";
+
+    $(function() {
+      $.ajax({
+        type : 'GET',
+        url  : url,
+        global:false,
+        dataType: 'json',
+    		success :  function(data)  {
+          callback(data);
+        }
+      });
+    });
+  </script>
+  </head>
+  <body>
+    <div id="mapContainer"></div>
+    <script>
+    var map;
+
+    function callback(data) {
+      $.each(data, function(index, element) {
+        var divName = 'map'+(index++);
+        $('#mapContainer').append('<div id="'+divName+'" class="map">hello</div>');
+        var title = element.name;
+        var jAddr = element.address;
+        var latlng = {};
+        latlng.lat = jAddr.lat;
+        latlng.lng = jAddr.lng;
+        loadMap(divName, latlng, title);
+      });
+    }
+
+    function loadMap(divName, center, title) {
+      map = new google.maps.Map(document.getElementById(divName), {
+        center: center,
+        zoom: 12
+      });
+      var marker = new google.maps.Marker({
+        position: center,
+        map: map,
+        title: title
+      });
+    }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=MAP_API_KEY"></script>
+  </body>
+</html>
